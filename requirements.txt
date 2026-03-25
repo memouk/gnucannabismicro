@@ -1,0 +1,10 @@
+Flask[async]>=2.0.0
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Cors
+python-dotenv>=1.0.0
+auth0-server-python>=1.0.0b7
+PyMySQL
+python-jose[cryptography]
+requests
+gunicorn

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GNUCannabis - Auth0</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>GNUCannabis</h1>
+      <p class="subtitle">Autenticacion con Auth0</p>
+
+      {% if user %}
+      <p class="ok">Sesion iniciada</p>
+      <p><strong>Usuario:</strong> {{ user.name or user.nickname or 'Sin nombre' }}</p>
+      <p><strong>Email:</strong> {{ user.email or 'No disponible' }}</p>
+      <div class="actions">
+        <a class="btn" href="{{ url_for('web_auth.profile') }}">Ver perfil</a>
+        <a class="btn danger" href="{{ url_for('web_auth.logout') }}">Cerrar sesion</a>
+      </div>
+      {% else %}
+      <p>Inicia sesion para acceder a contenido protegido.</p>
+      <div class="actions">
+        <a class="btn" href="{{ url_for('web_auth.login') }}">Iniciar sesion</a>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>

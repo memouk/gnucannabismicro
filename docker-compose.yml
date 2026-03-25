@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: gnucannabis-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-gnucannabis}
+      MYSQL_USER: ${MYSQL_USER:-gnucannabis_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gnucannabis_pass}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - gnucannabis_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  auth-users-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gnucannabis-auth-users-api
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    restart: unless-stopped
+
+volumes:
+  gnucannabis_mysql_data:
