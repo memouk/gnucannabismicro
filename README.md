@@ -23,6 +23,7 @@ cp .env.example .env
 
 - `MYSQL_*` para credenciales de la DB (por defecto crea `gnucannabis`)
 - `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_SECRET`, `AUTH0_REDIRECT_URI`
+- `FRONTEND_URL` URL de retorno despues del login (ej. `http://localhost:3000`)
 - `AUTH0_AUDIENCE` para proteger endpoints API con bearer token
 - Genera `AUTH0_SECRET` con:
 
@@ -33,7 +34,7 @@ openssl rand -hex 64
 3. Configura tu app en Auth0 Dashboard (Regular Web Application):
 
 - Allowed Callback URLs: `http://localhost:5000/callback`
-- Allowed Logout URLs: `http://localhost:5000`
+- Allowed Logout URLs: `http://localhost:5000`, `http://localhost:3000`
 - Allowed Web Origins: `http://localhost:5000`
 
 ## 3) Levantar servicio
@@ -41,6 +42,11 @@ openssl rand -hex 64
 ```bash
 docker compose up --build -d
 ```
+
+Servicios:
+
+- API Flask: `http://localhost:5000`
+- Frontend React: `http://localhost:3000`
 
 Verifica salud:
 
@@ -51,7 +57,7 @@ curl http://localhost:5000/api/health
 Opcional, revisar logs:
 
 ```bash
-docker compose logs -f mysql auth-users-api
+docker compose logs -f mysql auth-users-api frontend
 ```
 
 ## 4) Rutas web de autenticacion
@@ -108,6 +114,17 @@ Cultivo:
   "responsable_id": 1
 }
 ```
+
+## 9) Frontend React para CRUD
+
+El frontend esta en `frontend/` y corre en `http://localhost:3000`.
+
+- Haz clic en **Iniciar sesion Auth0**.
+- Despues del callback, vuelve automaticamente al frontend.
+- Haz clic en **Cargar sesion/token** para autocompletar el Bearer token.
+- Selecciona recurso (`usuarios`, `cultivos`, `plantas`, `insumos`).
+- Ejecuta operaciones: listar, crear, obtener por ID, actualizar y eliminar.
+- El frontend hace proxy a `/api` hacia `auth-users-api` por Nginx (sin cambiar CORS en navegador).
 
 Planta:
 

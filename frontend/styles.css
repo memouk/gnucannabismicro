@@ -1,0 +1,223 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #dcedc8;
+  color: #1b5e20;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1 {
+  margin: 0 0 16px;
+}
+
+.card {
+  background: #c8e6c9;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #81c784;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+input,
+textarea,
+button,
+select {
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+input,
+textarea,
+select {
+  background: #f2f9ef;
+  color: #1b5e20;
+  width: 100%;
+  border: 1px solid #81c784;
+}
+
+button {
+  background: #2e7d32;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button.primary {
+  background: #2e7d32;
+  color: #fff;
+}
+
+button.secondary {
+  background: #81c784;
+  color: #1b5e20;
+}
+
+button.danger {
+  background: #1b5e20;
+  color: #fff;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tabs.vertical {
+  flex-direction: column;
+}
+
+.tab.active {
+  background: #2e7d32;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+pre {
+  background: #f2f9ef;
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+  max-height: 420px;
+  border: 1px solid #81c784;
+}
+
+.muted {
+  color: #2e7d32;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.brand-header h1 {
+  margin: 0;
+  color: #1b5e20;
+  text-transform: lowercase;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo.small {
+  margin-right: 6px;
+}
+
+.login-card {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 14px;
+}
+
+.login-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.login-title-row h2 {
+  margin: 0;
+  color: #1b5e20;
+}
+
+.palette {
+  display: grid;
+  gap: 8px;
+}
+
+.palette span {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.login-right {
+  display: grid;
+  gap: 8px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+}
+
+.sidebar {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.content {
+  min-height: 320px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 8px 0 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1b5e20;
+}
+
+.field input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 900px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card {
+    grid-template-columns: 1fr;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

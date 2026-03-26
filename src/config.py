@@ -23,3 +23,5 @@ class Config:
     AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET", "")
     AUTH0_SECRET = os.getenv("AUTH0_SECRET", SECRET_KEY)
     AUTH0_REDIRECT_URI = os.getenv("AUTH0_REDIRECT_URI", "http://localhost:5000/callback")
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    BACKEND_LOGIN_URL = os.getenv("BACKEND_LOGIN_URL", "http://localhost:5000/")

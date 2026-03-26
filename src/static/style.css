@@ -5,8 +5,8 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #121826;
-  color: #e5e7eb;
+  background: #dcedc8;
+  color: #1b5e20;
 }
 
 .container {
@@ -20,19 +20,22 @@ body {
 .card {
   width: 100%;
   max-width: 620px;
-  background: #1f2937;
+  background: #c8e6c9;
   border-radius: 12px;
   padding: 28px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 24px rgba(27, 94, 32, 0.2);
+  border: 1px solid #81c784;
 }
 
 h1 {
   margin-top: 0;
+  margin-bottom: 8px;
+  color: #1b5e20;
 }
 
 .subtitle {
   margin-top: -8px;
-  color: #9ca3af;
+  color: #2e7d32;
 }
 
 .ok {
@@ -48,15 +51,21 @@ h1 {
 
 .btn {
   text-decoration: none;
-  background: #60a5fa;
-  color: #0b1220;
+  background: #81c784;
+  color: #1b5e20;
   padding: 10px 14px;
   border-radius: 8px;
   font-weight: bold;
 }
 
+.btn.primary {
+  background: #2e7d32;
+  color: #fff;
+}
+
 .btn.danger {
-  background: #f87171;
+  background: #1b5e20;
+  color: #fff;
 }
 
 .avatar {
@@ -65,4 +74,16 @@ h1 {
   border-radius: 999px;
   object-fit: cover;
   margin-bottom: 14px;
+  border: 2px solid #2e7d32;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.brand-logo.small {
+  margin-right: 4px;
 }
