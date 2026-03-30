@@ -9,6 +9,7 @@ class Cultivo(db.Model):
     ubicacion = db.Column(db.String(150))
     fecha_inicio = db.Column(db.Date)
     estado = db.Column(db.String(50))
+    estado_id = db.Column(db.Integer, db.ForeignKey("estados.id"))
     responsable_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"))
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.current_timestamp())
 
@@ -19,6 +20,7 @@ class Cultivo(db.Model):
             "ubicacion": self.ubicacion,
             "fecha_inicio": self.fecha_inicio.isoformat() if self.fecha_inicio else None,
             "estado": self.estado,
+            "estado_id": self.estado_id,
             "responsable_id": self.responsable_id,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }

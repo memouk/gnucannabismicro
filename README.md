@@ -45,6 +45,28 @@ openssl rand -hex 64
 docker compose up --build -d
 ```
 
+### 3.1) Si ya tenias el proyecto y hiciste `git pull`
+
+Tus companeros deben ejecutar estos pasos para traer cambios de codigo y de esquema en la BD:
+
+```bash
+docker compose up --build -d auth-users-api frontend
+```
+
+El backend aplica sincronizacion de esquema al iniciar:
+
+- Crea tabla `estados` si no existe.
+- Inserta estados base (`ACTIVO`, `INACTIVO`) si faltan.
+- Agrega columna `estado_id` en `cultivos` y `plantas` si no existe.
+- Crea llaves foraneas de `estado_id` hacia `estados`.
+- Migra datos antiguos de `estado` (texto) hacia `estado_id` cuando coincide.
+
+Si quieren validar en MySQL:
+
+```bash
+docker compose exec -T mysql mysql -u root -proot123 -D gnucannabis -e "DESCRIBE estados; DESCRIBE cultivos; DESCRIBE plantas;"
+```
+
 Servicios:
 
 - API Flask: `http://localhost:5000`
@@ -80,8 +102,11 @@ docker compose logs -f mysql auth-users-api frontend
 - `PUT /api/usuarios/{id}` (token Auth0)
 - `DELETE /api/usuarios/{id}` (token Auth0)
 - `GET /api/cultivos`, `POST /api/cultivos`, `PUT /api/cultivos/{id}`, `DELETE /api/cultivos/{id}` (token)
+- `GET /api/lotes`, `POST /api/lotes`, `PUT /api/lotes/{id}`, `DELETE /api/lotes/{id}` (token)
 - `GET /api/plantas`, `POST /api/plantas`, `PUT /api/plantas/{id}`, `DELETE /api/plantas/{id}` (token)
+- `GET /api/proveedores`, `POST /api/proveedores`, `PUT /api/proveedores/{id}`, `DELETE /api/proveedores/{id}` (token)
 - `GET /api/insumos`, `POST /api/insumos`, `PUT /api/insumos/{id}`, `DELETE /api/insumos/{id}` (token)
+- `GET /api/estados`, `POST /api/estados`, `PUT /api/estados/{id}`, `DELETE /api/estados/{id}` (token)
 
 > El CRUD de `usuarios` se ejecuta contra Auth0 Management API.
 
@@ -114,7 +139,7 @@ Cultivo:
   "nombre": "Cultivo Norte",
   "ubicacion": "Invernadero A",
   "fecha_inicio": "2026-03-25",
-  "estado": "ACTIVO",
+  "estado_id": 1,
   "responsable_id": 1
 }
 ```
@@ -125,10 +150,14 @@ El frontend esta en `frontend/` y corre en `http://localhost:3000`.
 
 - Haz clic en **Iniciar sesion Auth0**.
 - Despues del callback, vuelve automaticamente al frontend.
-- Haz clic en **Cargar sesion/token** para autocompletar el Bearer token.
-- Selecciona recurso (`usuarios`, `cultivos`, `plantas`, `insumos`).
+- Selecciona recurso (`usuarios`, `cultivos`, `lotes`, `plantas`, `proveedores`, `insumos`, `estados`).
 - Ejecuta operaciones: listar, crear, obtener por ID, actualizar y eliminar.
 - El frontend hace proxy a `/api` hacia `auth-users-api` por Nginx (sin cambiar CORS en navegador).
+- En formularios con relaciones se usa selector (no escribir IDs manuales en los casos soportados), por ejemplo:
+  - `cultivos.estado_id` y `plantas.estado_id` toman opciones de `estados`.
+  - `plantas.lote_id` toma opciones de `lotes`.
+  - `lotes.cultivo_id` toma opciones de `cultivos`.
+  - `insumos.proveedor_id` toma opciones de `proveedores`.
 
 Planta:
 
@@ -137,7 +166,7 @@ Planta:
   "lote_id": 1,
   "codigo": "PLANTA-0001",
   "fecha_germinacion": "2026-03-10",
-  "estado": "SANA"
+  "estado_id": 1
 }
 ```
 
@@ -150,5 +179,35 @@ Insumo:
   "unidad_medida": "kg",
   "stock_actual": 25.5,
   "proveedor_id": 1
+}
+```
+
+Lote:
+
+```json
+{
+  "cultivo_id": 1,
+  "nombre": "Lote A-01",
+  "fecha_siembra": "2026-03-12",
+  "estado": "PREPARACION"
+}
+```
+
+Proveedor:
+
+```json
+{
+  "nombre": "Agroinsumos SAS",
+  "telefono": "3000000000",
+  "email": "contacto@agroinsumos.co"
+}
+```
+
+Estado:
+
+```json
+{
+  "nombre": "ACTIVO",
+  "descripcion": "Registro habilitado"
 }
 ```

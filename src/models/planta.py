@@ -9,6 +9,7 @@ class Planta(db.Model):
     codigo = db.Column(db.String(100), unique=True)
     fecha_germinacion = db.Column(db.Date)
     estado = db.Column(db.String(50))
+    estado_id = db.Column(db.Integer, db.ForeignKey("estados.id"))
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.current_timestamp())
 
     def to_dict(self):
@@ -18,5 +19,6 @@ class Planta(db.Model):
             "codigo": self.codigo,
             "fecha_germinacion": self.fecha_germinacion.isoformat() if self.fecha_germinacion else None,
             "estado": self.estado,
+            "estado_id": self.estado_id,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
