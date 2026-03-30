@@ -8,10 +8,19 @@ const RESOURCES = {
     fields: [
       { name: "nombre", label: "Nombre", type: "text" },
       { name: "email", label: "Email", type: "text" },
-      { name: "password_hash", label: "Password hash", type: "text" },
+      { name: "password", label: "Password", type: "text" },
       { name: "activo", label: "Activo", type: "checkbox" },
+      { name: "tipo_documento", label: "Tipo documento", type: "text" },
+      { name: "numero_documento", label: "Numero documento", type: "text" },
     ],
-    defaults: { nombre: "", email: "", password_hash: "", activo: true },
+    defaults: {
+      nombre: "",
+      email: "",
+      password: "",
+      activo: true,
+      tipo_documento: "",
+      numero_documento: "",
+    },
   },
   cultivos: {
     path: "cultivos",
@@ -315,7 +324,12 @@ function App() {
           {(menuAction === "update" || menuAction === "delete") && (
             <label className="field">
               <span>ID</span>
-              <input type="number" value={currentId} onChange={(e) => setCurrentId(e.target.value)} />
+              <input
+                type={resource === "usuarios" ? "text" : "number"}
+                placeholder={resource === "usuarios" ? "auth0|xxxxxxxx" : "1"}
+                value={currentId}
+                onChange={(e) => setCurrentId(e.target.value)}
+              />
             </label>
           )}
 

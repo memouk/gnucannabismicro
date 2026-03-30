@@ -25,3 +25,9 @@ class Config:
     AUTH0_REDIRECT_URI = os.getenv("AUTH0_REDIRECT_URI", "http://localhost:5000/callback")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
     BACKEND_LOGIN_URL = os.getenv("BACKEND_LOGIN_URL", "http://localhost:5000/")
+
+    AUTH0_MGMT_AUDIENCE = os.getenv("AUTH0_MGMT_AUDIENCE", f"https://{AUTH0_DOMAIN}/api/v2/")
+    AUTH0_MGMT_CLIENT_ID = os.getenv("AUTH0_MGMT_CLIENT_ID", AUTH0_CLIENT_ID)
+    AUTH0_MGMT_CLIENT_SECRET = os.getenv("AUTH0_MGMT_CLIENT_SECRET", AUTH0_CLIENT_SECRET)
+    AUTH0_DB_CONNECTION = os.getenv("AUTH0_DB_CONNECTION", "Username-Password-Authentication")
+    AUTH0_TIMEOUT_SECONDS = int(os.getenv("AUTH0_TIMEOUT_SECONDS", "15"))

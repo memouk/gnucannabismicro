@@ -4,7 +4,7 @@ Microservicio en Flask para:
 
 - Autenticacion Auth0 tipo WebApp (login/logout/callback/profile)
 - Autorizacion JWT para endpoints API
-- CRUD del maestro `usuarios` en MySQL
+- CRUD de `usuarios` gestionado en Auth0 Management API
 
 ## 1) Requisitos
 
@@ -25,6 +25,8 @@ cp .env.example .env
 - `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_SECRET`, `AUTH0_REDIRECT_URI`
 - `FRONTEND_URL` URL de retorno despues del login (ej. `http://localhost:3000`)
 - `AUTH0_AUDIENCE` para proteger endpoints API con bearer token
+- `AUTH0_MGMT_AUDIENCE`, `AUTH0_MGMT_CLIENT_ID`, `AUTH0_MGMT_CLIENT_SECRET` para CRUD de usuarios en Auth0
+- `AUTH0_DB_CONNECTION` para crear usuarios de base de datos (ej. `Username-Password-Authentication`)
 - Genera `AUTH0_SECRET` con:
 
 ```bash
@@ -72,21 +74,21 @@ docker compose logs -f mysql auth-users-api frontend
 
 - `GET /api/health` (publico)
 - `GET /api/me` (token Auth0)
-- `GET /api/users` o `GET /api/usuarios` (token Auth0)
-- `GET /api/users/{id}` o `GET /api/usuarios/{id}` (token Auth0)
-- `POST /api/users` o `POST /api/usuarios` (token Auth0)
-- `PUT /api/users/{id}` o `PUT /api/usuarios/{id}` (token Auth0)
-- `DELETE /api/users/{id}` o `DELETE /api/usuarios/{id}` (token Auth0)
+- `GET /api/usuarios` (token Auth0)
+- `GET /api/usuarios/{id}` (token Auth0, id formato `auth0|xxxx`)
+- `POST /api/usuarios` (token Auth0)
+- `PUT /api/usuarios/{id}` (token Auth0)
+- `DELETE /api/usuarios/{id}` (token Auth0)
 - `GET /api/cultivos`, `POST /api/cultivos`, `PUT /api/cultivos/{id}`, `DELETE /api/cultivos/{id}` (token)
 - `GET /api/plantas`, `POST /api/plantas`, `PUT /api/plantas/{id}`, `DELETE /api/plantas/{id}` (token)
 - `GET /api/insumos`, `POST /api/insumos`, `PUT /api/insumos/{id}`, `DELETE /api/insumos/{id}` (token)
 
-> Estos endpoints operan sobre la tabla `usuarios` del script SQL compartido.
+> El CRUD de `usuarios` se ejecuta contra Auth0 Management API.
 
 ## 6) Ejemplo rapido con token
 
 ```bash
-curl -X GET http://localhost:5000/api/users \
+curl -X GET http://localhost:5000/api/usuarios \
   -H "Authorization: Bearer TU_ACCESS_TOKEN"
 ```
 
@@ -96,8 +98,10 @@ curl -X GET http://localhost:5000/api/users \
 {
   "nombre": "Juan Perez",
   "email": "juan@gnucannabis.com",
-  "password_hash": "$2b$12$hash_de_ejemplo",
-  "activo": true
+  "password": "Temporal123!",
+  "activo": true,
+  "tipo_documento": "CC",
+  "numero_documento": "1234567890"
 }
 ```
 

@@ -40,7 +40,10 @@ def _get_rsa_key(token):
     domain = current_app.config["AUTH0_DOMAIN"]
     jsonurl = urlopen(f"https://{domain}/.well-known/jwks.json")
     jwks = json.loads(jsonurl.read())
-    unverified_header = jwt.get_unverified_header(token)
+    try:
+        unverified_header = jwt.get_unverified_header(token)
+    except JWTError as exc:
+        raise AuthError({"code": "invalid_token", "description": "Malformed token"}, 401) from exc
 
     for key in jwks["keys"]:
         if key["kid"] == unverified_header["kid"]:
