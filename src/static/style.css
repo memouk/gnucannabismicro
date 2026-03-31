@@ -25,6 +25,7 @@ body {
   padding: 28px;
   box-shadow: 0 10px 24px rgba(27, 94, 32, 0.2);
   border: 1px solid #81c784;
+  text-align: center;
 }
 
 h1 {
@@ -47,6 +48,7 @@ h1 {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .btn {
@@ -79,6 +81,7 @@ h1 {
 
 .brand {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 12px;
   margin-bottom: 10px;
@@ -86,4 +89,15 @@ h1 {
 
 .brand-logo.small {
   margin-right: 4px;
+}
+
+.brand-logo-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.brand-logo-img.small {
+  width: 48px;
+  height: 48px;
 }

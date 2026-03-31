@@ -70,6 +70,17 @@ async def logout():
         return redirect(return_to)
 
 
+@web_auth_bp.get("/logout-local")
+async def logout_local():
+    return_to = current_app.config["BACKEND_LOGIN_URL"]
+    try:
+        # Cierra sesion local de la app, pero mantiene la sesion SSO de Auth0.
+        await auth0.logout(LogoutOptions(return_to=return_to), g.store_options)
+    except Exception:  # noqa: BLE001
+        pass
+    return redirect(return_to)
+
+
 @web_auth_bp.get("/auth/session")
 async def session_data():
     user = await auth0.get_user(g.store_options)

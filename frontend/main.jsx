@@ -106,19 +106,13 @@ const RESOURCES = {
 };
 
 function BrandLogo({ small = false }) {
-  const size = small ? 32 : 56;
   return (
     <div className={`brand-logo ${small ? "small" : ""}`}>
-      <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="32" cy="32" r="31" fill="#C8E6C9" stroke="#2E7D32" strokeWidth="2" />
-        <path
-          d="M32 10c5 6 5 13 0 19-5-6-5-13 0-19Zm-12 9c7 2 11 8 11 15-7-2-11-8-11-15Zm24 0c0 7-4 13-11 15 0-7 4-13 11-15Zm-22 17c8 0 13 4 15 11-8 0-13-4-15-11Zm20 0c-2 7-7 11-15 11 2-7 7-11 15-11Z"
-          fill="#2E7D32"
-        />
-        <text x="32" y="49" textAnchor="middle" fontSize="16" fontWeight="700" fill="#1B5E20">
-          G
-        </text>
-      </svg>
+      <img
+        src="/gnu-logo.png"
+        alt="Logo GNUCannabis"
+        className={`brand-logo-image ${small ? "small" : ""}`}
+      />
     </div>
   );
 }

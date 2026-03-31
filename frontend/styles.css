@@ -80,6 +80,7 @@ pre {
 .brand-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   margin-bottom: 16px;
   max-width: 1200px;
@@ -102,6 +103,17 @@ pre {
 
 .brand-logo.small {
   margin-right: 6px;
+}
+
+.brand-logo-image {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.brand-logo-image.small {
+  width: 32px;
+  height: 32px;
 }
 
 .login-card {
@@ -135,7 +147,7 @@ pre {
   color: #fff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 14px;
 }
 
@@ -149,6 +161,7 @@ pre {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
 }
 
 .icon-btn {
