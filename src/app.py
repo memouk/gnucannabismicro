@@ -4,13 +4,14 @@ from flask_cors import CORS
 from sqlalchemy import text
 
 from src.config import Config
-from src.extensions import db, migrate
+from src.extensions import csrf, db, migrate
 from src.routes.auth import auth_bp
 from src.routes.health import health_bp
 from src.routes.masters import masters_bp
 from src.routes.users import users_bp
 from src.routes.web_auth import web_auth_bp
 from src.utils.auth import AuthError
+from src.utils.kafka_consumer import start_kafka_consumer
 
 load_dotenv()
 
@@ -99,16 +100,27 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.secret_key = app.config["AUTH0_SECRET"]
-    CORS(app)
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": app.config["FRONTEND_URL"]}},
+        supports_credentials=False,
+    )
 
     db.init_app(app)
     migrate.init_app(app, db)
+    csrf.init_app(app)
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(users_bp, url_prefix="/api")
     app.register_blueprint(masters_bp, url_prefix="/api")
     app.register_blueprint(web_auth_bp)
+
+    # Endpoints API usan JWT Bearer y no cookie de sesion; por eso se excluyen de CSRF.
+    csrf.exempt(auth_bp)
+    csrf.exempt(users_bp)
+    csrf.exempt(masters_bp)
+    csrf.exempt(health_bp)
 
     @app.errorhandler(AuthError)
     def handle_auth_error(ex):
@@ -131,6 +143,7 @@ def create_app():
         from src.models.cultivo import Cultivo  # noqa: F401
         from src.models.estado import Estado  # noqa: F401
         from src.models.insumo import Insumo  # noqa: F401
+        from src.models.kafka_log import KafkaLog  # noqa: F401
         from src.models.lote import Lote  # noqa: F401
         from src.models.planta import Planta  # noqa: F401
         from src.models.proveedor import Proveedor  # noqa: F401
@@ -138,6 +151,10 @@ def create_app():
 
         db.create_all()
         _sync_schema_for_estados()
+
+    # Modo opcional: iniciar consumer en hilo dentro del proceso Flask.
+    # Por defecto se mantiene desactivado para evitar duplicados junto al worker dedicado.
+    start_kafka_consumer(app)
 
     return app
 

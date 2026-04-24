@@ -8,3 +8,5 @@ PyMySQL
 python-jose[cryptography]
 requests
 gunicorn
+Flask-WTF
+kafka-python

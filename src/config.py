@@ -3,6 +3,11 @@ import os
 
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+    KAFKA_CONSUMER_ENABLED = os.getenv("KAFKA_CONSUMER_ENABLED", "false").lower() == "true"
+    KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+    KAFKA_TOPIC_ALERTAS = os.getenv("KAFKA_TOPIC_ALERTAS", "plantasAlertas")
+    KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "gnucannabis-alertas-consumer")
+    KAFKA_AUTO_OFFSET_RESET = os.getenv("KAFKA_AUTO_OFFSET_RESET", "earliest")
 
     mysql_user = os.getenv("MYSQL_USER", "root")
     mysql_password = os.getenv("MYSQL_PASSWORD", "root")
