@@ -11,6 +11,14 @@ Microservicio en Flask para:
 - Docker y Docker Compose
 - Tenant en Auth0 con API configurada
 
+## CI/CD con GitHub Actions
+
+El pipeline esta en `.github/workflows/ci-cd.yml` y se ejecuta en cada `push` y `pull_request` hacia `main`/`master`.
+
+Pasos del flujo: validar codigo Python, construir imagenes Docker, prueba de integracion (`docker-compose.ci.yml`) y etapa CD simulada en la rama principal.
+
+Guia para la entrega (capturas y explicacion): `docs/ENTREGA_CI_CD_GITHUB_ACTIONS.md`.
+
 ## 2) Configuracion
 
 1. Copia archivo de entorno:

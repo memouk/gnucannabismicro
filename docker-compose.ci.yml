@@ -1,0 +1,55 @@
+# Stack reducido para CI (sin Kafka ni red externa practica2_default)
+name: gnucannabis-ci
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: gnucannabis
+      MYSQL_USER: gnucannabis_user
+      MYSQL_PASSWORD: gnucannabis_pass
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot123"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  auth-users-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: gnucannabis_user
+      MYSQL_PASSWORD: gnucannabis_pass
+      MYSQL_DATABASE: gnucannabis
+      SECRET_KEY: ci-secret-key
+      AUTH0_DOMAIN: ci-placeholder.auth0.com
+      AUTH0_CLIENT_ID: ci-client-id
+      AUTH0_CLIENT_SECRET: ci-client-secret
+      AUTH0_SECRET: ci-auth0-secret-for-pipeline-only
+      AUTH0_REDIRECT_URI: http://localhost:5000/callback
+      FRONTEND_URL: http://localhost:3000
+      BACKEND_LOGIN_URL: http://localhost:5000/
+      AUTH0_AUDIENCE: https://ci-placeholder.auth0.com/api/v2/
+      AUTH0_ALGORITHMS: RS256
+      KAFKA_CONSUMER_ENABLED: "false"
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      auth-users-api:
+        condition: service_started
+    ports:
+      - "3000:80"
