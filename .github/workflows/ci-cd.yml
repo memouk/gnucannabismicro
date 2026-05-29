@@ -1,22 +1,27 @@
-# CI/CD GNUCannabis — GitHub Actions
-# Disparador: push y PR en main, master, dev e integration.
-# Flujo: validar codigo -> construir imagenes -> prueba de integracion -> CD en main/master.
+# CI/CD GNUCannabis — flujo de la materia
+#
+# 1. Desde dev se crea feature/<numero-caso>, se sube y se integra a dev (PR).
+# 2. Aprobado en dev  -> se promueve a integration.
+# 3. Aprobado en integration -> se promueve a master (produccion).
+#
+# CI: en push/PR de feature, dev, integration y master.
+# CD: solo en push a dev, integration o master (no en ramas feature).
 
 name: CI/CD GNUCannabis
 
 on:
   push:
     branches:
-      - main
-      - master
       - dev
       - integration
+      - master
+      - main
+      - "feature/**"
   pull_request:
     branches:
-      - main
-      - master
       - dev
       - integration
+      - master
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -29,6 +34,18 @@ jobs:
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
+
+      - name: Etapa del flujo Git
+        run: |
+          echo "Rama: ${{ github.head_ref || github.ref_name }}"
+          echo "Evento: ${{ github.event_name }}"
+          case "${{ github.head_ref || github.ref_name }}" in
+            feature/*) echo "Etapa: desarrollo de caso (feature -> dev)" ;;
+            dev) echo "Etapa: rama de desarrollo integrado" ;;
+            integration) echo "Etapa: pre-produccion (dev aprobado)" ;;
+            master|main) echo "Etapa: produccion (integration aprobado)" ;;
+            *) echo "Etapa: validacion general" ;;
+          esac
 
       - name: Configurar Python 3.12
         uses: actions/setup-python@v5
@@ -107,31 +124,54 @@ jobs:
         if: always()
         run: docker compose -f docker-compose.ci.yml down -v
 
-  despliegue:
-    name: CD - Despliegue (simulado)
+  despliegue-dev:
+    name: CD - Despliegue entorno DEV
     runs-on: ubuntu-latest
     needs: prueba-integracion
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    environment: development
+    steps:
+      - name: Resumen despliegue DEV
+        run: |
+          echo "CD: codigo integrado en rama dev (casos aprobados desde feature/*)"
+          echo "Commit: ${{ github.sha }}"
+          echo "Siguiente paso del flujo: PR dev -> integration"
+
+  despliegue-integration:
+    name: CD - Despliegue entorno INTEGRATION
+    runs-on: ubuntu-latest
+    needs: prueba-integracion
+    if: github.event_name == 'push' && github.ref == 'refs/heads/integration'
+    environment: integration
+    steps:
+      - name: Resumen despliegue INTEGRATION
+        run: |
+          echo "CD: build promovido desde dev (aprobado)"
+          echo "Commit: ${{ github.sha }}"
+          echo "Siguiente paso del flujo: PR integration -> master"
+
+  despliegue-master:
+    name: CD - Despliegue entorno PRODUCCION (master)
+    runs-on: ubuntu-latest
+    needs: prueba-integracion
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     environment: production
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Resumen de despliegue
+      - name: Resumen despliegue PRODUCCION
         run: |
-          echo "Pipeline CI/CD completado para GNUCannabis"
+          echo "CD: release en master (integration aprobado)"
           echo "Commit: ${{ github.sha }}"
           echo "Rama: ${{ github.ref_name }}"
           echo "Autor: ${{ github.actor }}"
-          echo ""
-          echo "En un entorno real aqui se publicarian las imagenes Docker"
-          echo "o se desplegaria en Azure/AWS/Kubernetes."
 
-      - name: Marcar artefacto de entrega
-        run: echo "gnucannabis-build-${{ github.sha }}" > release-tag.txt
+      - name: Marcar artefacto de release
+        run: echo "gnucannabis-${{ github.ref_name }}-${{ github.sha }}" > release-tag.txt
 
       - name: Subir etiqueta de build
         uses: actions/upload-artifact@v4
         with:
-          name: release-tag
+          name: release-tag-master
           path: release-tag.txt

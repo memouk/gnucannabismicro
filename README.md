@@ -13,11 +13,13 @@ Microservicio en Flask para:
 
 ## CI/CD con GitHub Actions
 
-El pipeline esta en `.github/workflows/ci-cd.yml` y se ejecuta en cada `push` y `pull_request` hacia `main`/`master`.
+Flujo Git de la materia (`.github/workflows/ci-cd.yml`):
 
-Pasos del flujo: validar codigo Python, construir imagenes Docker, prueba de integracion (`docker-compose.ci.yml`) y etapa CD simulada en la rama principal.
+1. Desde `dev` crear `feature/<numero-caso>`, subir y abrir PR hacia `dev` (solo CI).
+2. Caso aprobado en `dev` → PR `dev` → `integration` (CI + CD pre-produccion).
+3. Aprobado en `integration` → PR `integration` → `master` (CI + CD produccion).
 
-Guia para la entrega (capturas y explicacion): `docs/ENTREGA_CI_CD_GITHUB_ACTIONS.md`.
+Guia para la entrega: `docs/ENTREGA_CI_CD_GITHUB_ACTIONS.md`.
 
 ## 2) Configuracion
 
